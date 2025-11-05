@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Tambah Mahasiswa</title>
+    <title>Edit Mahasiswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
@@ -12,7 +12,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                Speda
+                Spedia
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,36 +24,60 @@
                         <a class="nav-link" href="index.php">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Tambah Mahasiswa</a>
+                        <a class="nav-link" href="tambahmahasiswa.php">Tambah Mahasiswa</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
     <div class="container mt-4">
-        <h1>Tambah Mahasiswa</h1>
-        <form method="POST" action="createLogic.php">
+        <h1>Update Mahasiswa</h1>
+        <?php
+        include 'connection.php';
+        
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            $sql = "SELECT * FROM mahasiswa WHERE id = ?";
+            $stmt = $koneksi->prepare($sql);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+        ?>
+        <form method="POST" action="updateLogic.php">
+            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
             <div class="mb-3">
                 <label for="nim" class="form-label">NIM</label>
-                <input type="text" class="form-control" id="nim" name="nim" required 
-                       placeholder="Masukkan NIM Mahasiswa">
+                <input type="text" class="form-control" id="nim" name="nim" 
+                       value="<?php echo htmlspecialchars($row['nim']); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="nama" class="form-label">Nama</label>
-                <input type="text" class="form-control" id="nama" name="nama" required
-                       placeholder="Masukkan Nama Mahasiswa">
+                <input type="text" class="form-control" id="nama" name="nama" 
+                       value="<?php echo htmlspecialchars($row['nama']); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
                 <select class="form-select" id="jenis_kelamin" name="jenisKelamin" required>
-                    <option selected disabled value="">Pilih</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
+                    <option value="Laki-laki" <?php echo $row['jenis_kelamin'] == 'Laki-laki' ? 'selected' : ''; ?>>Laki-laki</option>
+                    <option value="Perempuan" <?php echo $row['jenis_kelamin'] == 'Perempuan' ? 'selected' : ''; ?>>Perempuan</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Update</button>
             <a href="index.php" class="btn btn-secondary">Kembali</a>
         </form>
+        <?php
+            } else {
+                echo "<div class='alert alert-danger'>Data tidak ditemukan.</div>";
+            }
+            $stmt->close();
+        } else {
+            echo "<div class='alert alert-danger'>ID tidak valid.</div>";
+        }
+        $koneksi->close();
+        ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
