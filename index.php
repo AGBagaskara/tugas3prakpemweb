@@ -24,7 +24,7 @@
                         <a class="nav-link active" aria-current="page" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="tambahmahasiswa.html">Tambah Mahasiswa</a>
+                        <a class="nav-link" href="tambahmahasiswa.php">Tambah Mahasiswa</a>
                     </li>
                 </ul>
             </div>
